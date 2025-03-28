@@ -40,42 +40,70 @@ export function tokenFilesFromLocalVariables(localVariablesResponse: GetLocalVar
   const localVariableCollections = localVariablesResponse.meta.variableCollections
   const localVariables = localVariablesResponse.meta.variables
 
+  // Rendezzük a változókat gyűjtemények szerint
+  const variablesByCollection: { [collectionId: string]: LocalVariable[] } = {}
+  
   Object.values(localVariables).forEach((variable) => {
     // Skip remote variables because we only want to generate tokens for local variables
     if (variable.remote) {
       return
     }
-
-    const collection = localVariableCollections[variable.variableCollectionId]
-
+    
+    const collectionId = variable.variableCollectionId
+    if (!variablesByCollection[collectionId]) {
+      variablesByCollection[collectionId] = []
+    }
+    variablesByCollection[collectionId].push(variable)
+  })
+  
+  // Végigmegyünk a gyűjteményeken
+  Object.entries(variablesByCollection).forEach(([collectionId, variables]) => {
+    const collection = localVariableCollections[collectionId]
+    const hasMultipleModes = collection.modes.length > 1
+    
+    // Végigmegyünk minden módon
     collection.modes.forEach((mode) => {
-      const fileName = `${collection.name}.${mode.name}.json`
+      const fileName = `${collection.name}.${mode.name}`
 
       if (!tokenFiles[fileName]) {
         tokenFiles[fileName] = {}
       }
-
-      let obj: any = tokenFiles[fileName]
-
-      variable.name.split('/').forEach((groupName) => {
-        obj[groupName] = obj[groupName] || {}
-        obj = obj[groupName]
-      })
-
-      const token: Token = {
-        $type: tokenTypeFromVariable(variable),
-        $value: tokenValueFromVariable(variable, mode.modeId, localVariables),
-        $description: variable.description,
-        $extensions: {
-          'com.figma': {
-            hiddenFromPublishing: variable.hiddenFromPublishing,
-            scopes: variable.scopes,
-            codeSyntax: variable.codeSyntax,
+      
+      // Végigmegyünk a változókon
+      variables.forEach((variable) => {
+        let obj: any = tokenFiles[fileName]
+        const groupNames = variable.name.split('/')
+        
+        // A hierarchia létrehozása (kivéve az utolsó elemet, ami a változó neve)
+        for (let i = 0; i < groupNames.length - 1; i++) {
+          const groupName = groupNames[i]
+          obj[groupName] = obj[groupName] || {}
+          obj = obj[groupName]
+        }
+        
+        // Az utolsó elem a változó neve
+        let variableName = groupNames[groupNames.length - 1]
+        
+        // Ha több mód van, adjuk hozzá a mód nevét a változó nevéhez
+        if (hasMultipleModes) {
+          variableName = `${variableName}-${mode.name.toLowerCase().replace(/\s+/g, '-')}`
+        }
+        
+        const token: Token = {
+          $type: tokenTypeFromVariable(variable),
+          $value: tokenValueFromVariable(variable, mode.modeId, localVariables),
+          $description: variable.description,
+          $extensions: {
+            'com.figma': {
+              hiddenFromPublishing: variable.hiddenFromPublishing,
+              scopes: variable.scopes,
+              codeSyntax: variable.codeSyntax,
+            },
           },
-        },
-      }
-
-      Object.assign(obj, token)
+        }
+        
+        obj[variableName] = token
+      })
     })
   })
 

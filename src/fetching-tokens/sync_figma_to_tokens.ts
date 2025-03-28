@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import * as fs from 'fs'
+import * as path from 'path'
 
 import FigmaApi from './figma_api.js'
 
@@ -7,32 +8,48 @@ import { green } from './utils.js'
 import { tokenFilesFromLocalVariables } from './token_export.js'
 
 //TODO Replace it with the correct tokens
-const personalAccessToken = '';
-const fileKey = '';
+const personalAccessToken = 'figd_wkg2FrbaSZaEggtDP8v2rjd3GWdZyqcKoQghPT03';
+const fileKey = 'r12uvefZIx3gvOwa3yWnoa';
 
 async function main() {
+  const figmaApi = new FigmaApi(personalAccessToken)
 
-  const api = new FigmaApi(personalAccessToken)
-  const localVariables = await api.getLocalVariables(fileKey)
+  console.log('Fetching Figma local variables...\n')
+  try {
+    const localVariables = await figmaApi.getLocalVariables(fileKey)
+    
+    const tokensFiles = tokenFilesFromLocalVariables(localVariables)
 
-  const tokensFiles = tokenFilesFromLocalVariables(localVariables)
+    let outputDir = 'tokens'
+    const outputArgIdx = process.argv.indexOf('--output')
+    if (outputArgIdx !== -1) {
+      outputDir = process.argv[outputArgIdx + 1] ?? outputDir
+    }
 
-  let outputDir = 'tokens'
-  const outputArgIdx = process.argv.indexOf('--output')
-  if (outputArgIdx !== -1) {
-    outputDir = process.argv[outputArgIdx + 1]
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true })
+    }
+
+    for (const fileName in tokensFiles) {
+      // Kezeljük a / vagy \ karaktert tartalmazó fájlneveket (almappákat)
+      const filePath = path.join(outputDir, `${fileName}.json`)
+      
+      // Ellenőrizzük, hogy a szülő könyvtár létezik-e, ha nem, hozzuk létre
+      const dirName = path.dirname(filePath)
+      if (!fs.existsSync(dirName)) {
+        fs.mkdirSync(dirName, { recursive: true })
+      }
+      
+      const fileContent = JSON.stringify(tokensFiles[fileName], null, 2)
+      
+      fs.writeFileSync(filePath, fileContent)
+      console.log(green(`✓ Written ${filePath}`))
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    process.exit(1)
   }
-
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir)
-  }
-
-  Object.entries(tokensFiles).forEach(([fileName, fileContent]) => {
-    fs.writeFileSync(`${outputDir}/${fileName}`, JSON.stringify(fileContent, null, 2))
-    console.log(`Wrote ${fileName}`)
-  })
-
-  console.log(green(`✅ Tokens files have been written to the ${outputDir} directory`))
 }
 
 main()

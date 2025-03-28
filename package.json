@@ -5,7 +5,7 @@
     "prettier:check": "prettier --check src/",
     "sync-figma-to-tokens": "node --loader ts-node/esm src/fetching-tokens/sync_figma_to_tokens.ts",
     "test": "jest",
-    "build": "style-dictionary build"
+    "build": "node build.mjs"
   },
   "dependencies": {
     "axios": "^1.6.0",

@@ -1,0 +1,114 @@
+{
+  "radius-xs": {
+    "$type": "number",
+    "$value": "{radius.4}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-sm": {
+    "$type": "number",
+    "$value": "{radius.8}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-md": {
+    "$type": "number",
+    "$value": "{radius.12}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-lg": {
+    "$type": "number",
+    "$value": "{radius.16}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-xl": {
+    "$type": "number",
+    "$value": "{radius.32}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-full": {
+    "$type": "number",
+    "$value": "{radius.1000}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-container-md": {
+    "$type": "number",
+    "$value": "{radius.8}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  },
+  "radius-container-lg": {
+    "$type": "number",
+    "$value": "{radius.16}",
+    "$description": "",
+    "$extensions": {
+      "com.figma": {
+        "hiddenFromPublishing": false,
+        "scopes": [
+          "CORNER_RADIUS"
+        ],
+        "codeSyntax": {}
+      }
+    }
+  }
+}
