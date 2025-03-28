@@ -8,8 +8,8 @@ import { green } from './utils.js'
 import { tokenFilesFromLocalVariables } from './token_export.js'
 
 //TODO Replace it with the correct tokens
-const personalAccessToken = 'figd_wkg2FrbaSZaEggtDP8v2rjd3GWdZyqcKoQghPT03';
-const fileKey = 'r12uvefZIx3gvOwa3yWnoa';
+const personalAccessToken = '';
+const fileKey = '';
 
 async function main() {
   const figmaApi = new FigmaApi(personalAccessToken)
